@@ -4,6 +4,8 @@
   "description": "ticket sales web api",
   "main": "app.js",
   "scripts": {
+    "start-development": "export APP_NODE_ENV=development && nodemon app.js",
+    "start-production": "export APP_NODE_ENV=production && nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
