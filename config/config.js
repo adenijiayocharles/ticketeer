@@ -1,16 +1,25 @@
-const dotenv = require('dotenv');
-
-dotenv.config({
-    path: __basedir + `/${process.env.APP_NODE_ENV}.env`,
-});
+require('dotenv').config();
 
 module.exports = {
-    NODE_ENV: process.env.NODE_ENV || 'development',
-    HOST: process.env.HOST || 'localhost',
-    PORT: process.env.PORT || 3000,
-    DB_USER: process.env.DB_USER,
-    DB_PASSWORD: process.env.DB_PASSWORD,
-    DB_DATABASE: process.env.DB_DATABASE,
-    DB_HOST: process.env.DB_HOST,
-    DB_DIALECT: process.env.DB_DIALECT,
+    development: {
+        username: process.env.DEVELOPMENT_DB_USER,
+        password: process.env.DEVELOPMENT_DB_PASSWORD,
+        database: process.env.DEVELOPMENT_DB_DATABASE,
+        host: process.env.DEVELOPMENT_DB_HOST,
+        dialect: process.env.DATABASE_DIALECT,
+    },
+    test: {
+        username: process.env.TEST_DB_USER,
+        password: process.env.TEST_DB_PASSWORD,
+        database: process.env.TEST_DB_DATABASE,
+        host: process.env.TEST_DB_HOST,
+        dialect: process.env.DATABASE_DIALECT,
+    },
+    production: {
+        username: process.env.PRODUCTION_DB_USER,
+        password: process.env.PRODUCTION_DB_PASSWORD,
+        database: process.env.PRODUCTION_DB_DATABASE,
+        host: process.env.PRODUCTION_DB_HOST,
+        dialect: process.env.DATABASE_DIALECT,
+    },
 };

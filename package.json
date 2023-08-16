@@ -4,8 +4,11 @@
   "description": "ticket sales web api",
   "main": "app.js",
   "scripts": {
-    "start-development": "export APP_NODE_ENV=development && nodemon app.js",
-    "start-production": "export APP_NODE_ENV=production && nodemon app.js",
+    "start-development": "export NODE_ENV=development && nodemon app.js",
+    "start-production": "export NODE_ENV=production && nodemon app.js",
+    "migrate": "node -e \"require('./migration').migrate()\"",
+    "migrate:rollback": "node -e \"require('./migration').migrateRollback()\"",
+    "migrate:reset": "node -e \"require('./migration').migrateReset()\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
