@@ -1,32 +1,35 @@
+'use strict';
 const status = require('http-status');
 
-const success = (
+const sendSuccess = (
     res,
     message = 'Operation successful',
     statusCode = status.OK,
     body = {}
 ) => {
-    return res.status(statusCode).json({ message, ...body });
+    return res.status(statusCode).json({ success: true, message, ...body });
 };
 
-const error = (
+const sendError = (
     res,
-    statusCode = status.BAD_REQUEST,
     message = 'Operation failed',
+    statusCode = status.BAD_REQUEST,
     body = {}
 ) => {
-    return res.status(statusCode).json({ message, ...body });
+    return res.status(statusCode).json({ success: false, message, ...body });
 };
 
-const fatal = (
+const sendFatal = (
     res,
-    statusCode = status.INTERNAL_SERVER_ERROR,
     message = 'Oops, something went wrong',
+    statusCode = status.INTERNAL_SERVER_ERROR,
     body = {},
     error,
     stack
 ) => {
-    return res.status(statusCode).send({ message, ...body, error, stack });
+    return res
+        .status(statusCode)
+        .send({ success: false, message, ...body, error, stack });
 };
 
-module.exports = { success, error, fatal };
+module.exports = { sendSuccess, sendError, sendFatal };

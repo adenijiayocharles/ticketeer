@@ -15,11 +15,11 @@ module.exports = {
                 allowNull: false,
                 unique: true,
             },
-            firstName: {
+            first_name: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
-            lastName: {
+            last_name: {
                 type: Sequelize.STRING,
                 allowNull: false,
             },
@@ -33,11 +33,11 @@ module.exports = {
                 defaultValue: true,
                 allowNull: false,
             },
-            createdAt: {
+            created_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
             },
-            updatedAt: {
+            updated_at: {
                 allowNull: false,
                 type: Sequelize.DATE,
             },

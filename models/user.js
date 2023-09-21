@@ -16,13 +16,14 @@ module.exports = (sequelize, DataTypes) => {
             uuid: {
                 type: DataTypes.STRING,
                 allowNull: false,
+                defaultValue: DataTypes.UUIDV4,
                 unique: true,
             },
-            firstName: {
+            first_name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
-            lastName: {
+            last_name: {
                 type: DataTypes.STRING,
                 allowNull: false,
             },
@@ -38,7 +39,10 @@ module.exports = (sequelize, DataTypes) => {
         },
         {
             sequelize,
-            modelName: 'users',
+            modelName: 'User',
+            tableName: 'users',
+            createdAt: 'created_at',
+            updatedAt: 'updated_at',
         }
     );
     return User;
