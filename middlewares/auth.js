@@ -2,15 +2,26 @@
 require('dotenv').config();
 const response = require('../utilities/response');
 const tokenizer = require('../utilities/tokenizer');
+const httpStatus = require('http-status');
 
-const verifyToken = (req, res, next) => {
-    const token = req.headers['Authoriztion Token'];
+const verifyUser = (req, res, next) => {
+    const token = req.headers['Authorization'];
 
     if (!token) {
         return response.sendError(
             res,
             'Token does not exist',
-            httpStatus.BAD_REQUEST
+            httpStatus.UNAUTHORIZED
+        );
+    }
+
+    if (token.startsWith('Bearer ')) {
+        token = token.slice(7, token.length);
+    } else {
+        return response.sendError(
+            res,
+            "Authorization token not found. Token must start with 'Bearer'",
+            httpStatus.UNAUTHORIZED
         );
     }
 
@@ -24,4 +35,4 @@ const verifyToken = (req, res, next) => {
     return next();
 };
 
-module.exports = verifyToken;
+module.exports = verifyUser;
