@@ -18,7 +18,7 @@ const validation = Joi.object({
 const userValidation = async (req, res, next) => {
     const { error } = validation.validate(req.body);
     if (error) {
-        return response.sendError(res, httpStatus.BAD_REQUEST, error.message);
+        return response.sendError(res, error.message, httpStatus.BAD_REQUEST);
     } else {
         next();
     }

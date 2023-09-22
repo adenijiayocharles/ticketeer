@@ -40,6 +40,10 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
                 defaultValue: true,
             },
+            password_reset: {
+                type: DataTypes.STRING,
+                allowNull: true,
+            },
         },
         {
             sequelize,
