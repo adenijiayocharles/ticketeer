@@ -21,6 +21,7 @@
     "express-joi-validation": "^5.0.1",
     "http-status": "^1.6.2",
     "joi": "^17.9.2",
+    "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.6.0",
     "sequelize": "^6.32.1"
   },

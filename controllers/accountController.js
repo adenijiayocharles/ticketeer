@@ -1,8 +1,10 @@
 'use strict';
 const { sequelize, User } = require('../models');
 const httpStatus = require('http-status');
+const bcrypt = require('bcrypt');
+
+const tokenizer = require('../utilities/tokenizer');
 const response = require('../utilities/response');
-const brcypt = require('bcrypt');
 
 const register = async (req, res, next) => {
     try {
@@ -22,7 +24,7 @@ const register = async (req, res, next) => {
             first_name: req.body.first_name,
             last_name: req.body.last_name,
             email: req.body.email,
-            password: brcypt.hashSync(req.body.password_confirmation, 10),
+            password: await bcrypt.hashSync(req.body.password_confirmation, 10),
         });
         return response.sendSuccess(
             res,
@@ -34,4 +36,42 @@ const register = async (req, res, next) => {
     }
 };
 
-module.exports = { register };
+const login = async (req, res, next) => {
+    try {
+        const user = await User.findOne({
+            where: { email: req.body.email },
+        });
+
+        if (!user) {
+            return response.sendError(
+                res,
+                'Unable to login user',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
+        if (bcrypt.compareSync(req.body.password, user.password)) {
+            const authToken = tokenizer.generateToken({
+                id: user.id,
+                uuid: user.uuid,
+            });
+
+            return response.sendSuccess(
+                res,
+                'Login successfully',
+                httpStatus.OK,
+                { authToken }
+            );
+        }
+
+        return response.sendError(
+            res,
+            'Unable to login user',
+            httpStatus.BAD_REQUEST
+        );
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { register, login };
