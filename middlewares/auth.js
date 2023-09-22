@@ -18,7 +18,7 @@ const verifyToken = (req, res, next) => {
         const decoded = tokenizer.verifyToken(token);
         req.user = decoded;
     } catch (err) {
-        return res.status(401).send('Invalid Token');
+        return response.sendError(res, 'Invalid Token', httpStatus.BAD_REQUEST);
     }
 
     return next();
