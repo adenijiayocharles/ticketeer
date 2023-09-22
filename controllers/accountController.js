@@ -7,6 +7,8 @@ const { v4: uuidv4 } = require('uuid');
 const tokenizer = require('../utilities/tokenizer');
 const response = require('../utilities/response');
 
+const email = require('../services/email');
+
 const register = async (req, res, next) => {
     try {
         const checkUser = await User.findOne({
@@ -93,6 +95,13 @@ const resetPassword = async (req, res, next) => {
             );
 
             //send email here
+            const emailPayload = {
+                recipient: user.email,
+                subject: 'Password reset',
+                text: randomUUID,
+            };
+            await email.sendEmail(emailPayload);
+
             return response.sendSuccess(
                 res,
                 'Password reset email has been sent',
