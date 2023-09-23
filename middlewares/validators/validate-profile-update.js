@@ -4,15 +4,11 @@ const httpStatus = require('http-status');
 const response = require('../../utilities/response');
 
 const validation = Joi.object({
-    password: Joi.string().min(8).trim(true).required(),
-    password_confirmation: Joi.any()
-        .equal(Joi.ref('password'))
-        .required()
-        .label('Confirm password')
-        .messages({ 'any.only': '{{#label}} does not match with password' }),
+    first_name: Joi.string().trim(true).required(),
+    last_name: Joi.string().trim(true).required(),
 }).options({ abortEarly: false, allowUnknown: true });
 
-const passwordChangeValidation = async (req, res, next) => {
+const profileUpdateValidation = async (req, res, next) => {
     const { error } = validation.validate(req.body);
     if (error) {
         return response.sendError(res, error.message, httpStatus.BAD_REQUEST);
@@ -20,4 +16,4 @@ const passwordChangeValidation = async (req, res, next) => {
         next();
     }
 };
-module.exports = passwordChangeValidation;
+module.exports = profileUpdateValidation;

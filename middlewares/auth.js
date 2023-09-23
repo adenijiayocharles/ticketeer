@@ -5,12 +5,12 @@ const tokenizer = require('../utilities/tokenizer');
 const httpStatus = require('http-status');
 
 const verifyUser = (req, res, next) => {
-    const token = req.headers['Authorization'];
+    let token = req.headers['authorization'];
 
     if (!token) {
         return response.sendError(
             res,
-            'Token does not exist',
+            'Authorization token not found',
             httpStatus.UNAUTHORIZED
         );
     }
@@ -29,7 +29,11 @@ const verifyUser = (req, res, next) => {
         const decoded = tokenizer.verifyToken(token);
         req.user = decoded;
     } catch (err) {
-        return response.sendError(res, 'Invalid Token', httpStatus.BAD_REQUEST);
+        return response.sendError(
+            res,
+            'Invalid Authorization Token',
+            httpStatus.UNAUTHORIZED
+        );
     }
 
     return next();

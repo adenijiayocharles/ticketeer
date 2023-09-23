@@ -13,8 +13,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 const accountRouter = require('./router/account');
+const userRouter = require('./router/user');
 
 app.use('/api/account', accountRouter);
+app.use('/api/user', userRouter);
 
 app.get('/api/health-check', (req, res) => {
     return response.sendSuccess(res, 'api running smoothly', 200);
