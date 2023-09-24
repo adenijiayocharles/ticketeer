@@ -4,6 +4,7 @@ const httpStatus = require('http-status');
 const response = require('../../utilities/response');
 
 const validation = Joi.object({
+    current_password: Joi.string().min(8).trim(true).required(),
     password: Joi.string().min(8).trim(true).required(),
     password_confirmation: Joi.any()
         .equal(Joi.ref('password'))
