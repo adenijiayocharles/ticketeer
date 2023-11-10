@@ -49,7 +49,7 @@ module.exports = {
             },
             location: {
                 allowNull: true,
-                type: Sequelize.TIME,
+                type: Sequelize.STRING,
             },
             status: {
                 allowNull: false,

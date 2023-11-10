@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
          */
         static associate(models) {
             // define association here
-            
         }
     }
     Event.init(
@@ -54,7 +53,7 @@ module.exports = (sequelize, DataTypes) => {
             },
             location: {
                 allowNull: true,
-                type: DataTypes.TIME,
+                type: DataTypes.STRING,
             },
             status: {
                 allowNull: false,
@@ -62,7 +61,7 @@ module.exports = (sequelize, DataTypes) => {
                 type: DataTypes.BOOLEAN,
             },
             created_by: {
-                type: Sequelize.INTEGER,
+                type: DataTypes.INTEGER,
                 allowNull: false,
                 references: {
                     model: {
