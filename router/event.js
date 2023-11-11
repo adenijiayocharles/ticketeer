@@ -9,9 +9,10 @@ const eventController = require('../controllers/eventController');
 const authMiddleware = require('../middlewares/auth');
 
 router.post(
-    '/create',
+    '/',
     [authMiddleware, createEventValidation],
     eventController.create
 );
+router.delete('/:id', authMiddleware, eventController.deleteEvent);
 
 module.exports = router;

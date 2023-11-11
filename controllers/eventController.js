@@ -7,7 +7,7 @@ const response = require('../utilities/response');
 
 const create = async (req, res, next) => {
     try {
-        await Event.create({
+        const event = await Event.create({
             name: req.body.name,
             description: req.body.description,
             type: req.body.type,
@@ -23,11 +23,36 @@ const create = async (req, res, next) => {
         return response.sendSuccess(
             res,
             'Event created successfully',
-            httpStatus.CREATED
+            httpStatus.CREATED,
+            { event }
         );
     } catch (error) {
         next(error);
     }
 };
 
-module.exports = { create };
+const deleteEvent = async (req, res, next) => {
+    try {
+        const event = await Event.destroy({
+            where: { uuid: req.params.id, created_by: req.user.data.id },
+        });
+
+        if (event) {
+            return response.sendSuccess(
+                res,
+                'Event deleted successfully',
+                httpStatus.OK
+            );
+        } else {
+            return response.sendSuccess(
+                res,
+                'Unable to delete event. Please try again later',
+                httpStatus.OK
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+module.exports = { create, deleteEvent };
