@@ -31,6 +31,28 @@ const create = async (req, res, next) => {
     }
 };
 
+const findAll = async (req, res, next) => {
+    try {
+        const data = await Event.findAll({
+            where: { created_by: req.user.data.id },
+        });
+
+        if (data) {
+            return response.sendSuccess(res, 'Events found', httpStatus.OK, {
+                data,
+            });
+        } else {
+            return response.sendSuccess(
+                res,
+                'No created events yet',
+                httpStatus.OK
+            );
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 const deleteEvent = async (req, res, next) => {
     try {
         const event = await Event.destroy({
@@ -55,4 +77,4 @@ const deleteEvent = async (req, res, next) => {
     }
 };
 
-module.exports = { create, deleteEvent };
+module.exports = { create, deleteEvent, findAll };

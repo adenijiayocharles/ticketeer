@@ -13,6 +13,7 @@ router.post(
     [authMiddleware, createEventValidation],
     eventController.create
 );
+router.get('/', authMiddleware, eventController.findAll);
 router.delete('/:id', authMiddleware, eventController.deleteEvent);
 
 module.exports = router;
