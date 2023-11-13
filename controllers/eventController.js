@@ -7,10 +7,12 @@ const response = require('../utilities/response');
 
 const create = async (req, res, next) => {
     try {
-        const startDate = new Date(req.body.start_date);
-        const endDate = new Date(req.body.end_date);
+        let startDateTime = new Date(
+            req.body.start_date + ' ' + req.body.start_time
+        );
+        let endDateTime = new Date(req.body.end_date + ' ' + req.body.end_time);
 
-        if (isBefore(endDate, startDate)) {
+        if (isBefore(endDateTime, startDateTime)) {
             return response.sendError(
                 res,
                 'Start date must start before end date',
