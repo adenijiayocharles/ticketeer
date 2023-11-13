@@ -14,6 +14,7 @@ router.post(
     eventController.create
 );
 router.get('/', authMiddleware, eventController.findAll);
+router.get('/:id', authMiddleware, eventController.findOne);
 router.delete('/:id', authMiddleware, eventController.deleteEvent);
 
 module.exports = router;

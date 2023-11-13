@@ -67,6 +67,24 @@ const findAll = async (req, res, next) => {
     }
 };
 
+const findOne = async (req, res, next) => {
+    try {
+        const data = await Event.findOne({
+            where: { created_by: req.user.data.id, uuid: req.params.id },
+        });
+
+        if (data) {
+            return response.sendSuccess(res, 'Event found', httpStatus.OK, {
+                data,
+            });
+        } else {
+            return response.sendSuccess(res, 'Event not found', httpStatus.OK);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
 const deleteEvent = async (req, res, next) => {
     try {
         const event = await Event.destroy({
@@ -91,4 +109,4 @@ const deleteEvent = async (req, res, next) => {
     }
 };
 
-module.exports = { create, deleteEvent, findAll };
+module.exports = { create, deleteEvent, findAll, findOne };
