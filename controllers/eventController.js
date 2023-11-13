@@ -2,11 +2,22 @@
 const { Event } = require('../models');
 const httpStatus = require('http-status');
 const { v4: uuidv4 } = require('uuid');
-
+const { isBefore } = require('date-fns');
 const response = require('../utilities/response');
 
 const create = async (req, res, next) => {
     try {
+        const startDate = new Date(req.body.start_date);
+        const endDate = new Date(req.body.end_date);
+
+        if (isBefore(endDate, startDate)) {
+            return response.sendError(
+                res,
+                'Start date must start before end date',
+                httpStatus.BAD_REQUEST
+            );
+        }
+
         const event = await Event.create({
             name: req.body.name,
             description: req.body.description,
@@ -26,6 +37,7 @@ const create = async (req, res, next) => {
             httpStatus.CREATED,
             { event }
         );
+        console.log(44);
     } catch (error) {
         next(error);
     }
