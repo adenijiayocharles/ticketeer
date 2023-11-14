@@ -1,7 +1,6 @@
 'use strict';
 const { Event } = require('../models');
 const httpStatus = require('http-status');
-const { v4: uuidv4 } = require('uuid');
 const { isBefore } = require('date-fns');
 const response = require('../utilities/response');
 
@@ -39,7 +38,6 @@ const create = async (req, res, next) => {
             httpStatus.CREATED,
             { event }
         );
-        console.log(44);
     } catch (error) {
         next(error);
     }
@@ -56,7 +54,7 @@ const findAll = async (req, res, next) => {
                 data,
             });
         } else {
-            return response.sendSuccess(
+            return response.sendError(
                 res,
                 'No created events yet',
                 httpStatus.OK
@@ -78,7 +76,35 @@ const findOne = async (req, res, next) => {
                 data,
             });
         } else {
-            return response.sendSuccess(res, 'Event not found', httpStatus.OK);
+            return response.sendError(res, 'Event not found', httpStatus.OK);
+        }
+    } catch (error) {
+        next(error);
+    }
+};
+
+const update = async (req, res, next) => {
+    try {
+        const data = await Event.update(req.body, {
+            where: { created_by: req.user.data.id, uuid: req.params.id },
+        });
+
+        if (data[0]) {
+            const data = await Event.findOne({
+                where: { created_by: req.user.data.id, uuid: req.params.id },
+            });
+            return response.sendSuccess(
+                res,
+                'Event details updated',
+                httpStatus.OK,
+                { data }
+            );
+        } else {
+            return response.sendError(
+                res,
+                'Event not found, update failed',
+                httpStatus.OK
+            );
         }
     } catch (error) {
         next(error);
@@ -98,7 +124,7 @@ const deleteEvent = async (req, res, next) => {
                 httpStatus.OK
             );
         } else {
-            return response.sendSuccess(
+            return response.sendError(
                 res,
                 'Unable to delete event. Please try again later',
                 httpStatus.OK
@@ -109,4 +135,4 @@ const deleteEvent = async (req, res, next) => {
     }
 };
 
-module.exports = { create, deleteEvent, findAll, findOne };
+module.exports = { create, deleteEvent, findAll, findOne, update };
