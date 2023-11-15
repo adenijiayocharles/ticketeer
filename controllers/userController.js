@@ -1,5 +1,5 @@
 'use strict';
-const { sequelize, User } = require('../models');
+const { User } = require('../models');
 const httpStatus = require('http-status');
 const bcrypt = require('bcrypt');
 const { v4: uuidv4 } = require('uuid');
