@@ -21,12 +21,19 @@ const sendError = (
 };
 
 const sendFatal = (error, req, res) => {
-    return res.status(status.INTERNAL_SERVER_ERROR).send({
+    let errorObject = {
         success: false,
-        message: 'Oops, something went wrong',
-        error: error.errors,
-        stack: error.stack,
-    });
+        message: 'Oops, Internal Server Error.',
+    };
+
+    if (process.env.NODE_ENV === 'development') {
+        errorObject = {
+            ...errorObject,
+            stack: error.stack,
+        };
+    }
+
+    return res.status(status.INTERNAL_SERVER_ERROR).send(errorObject);
 };
 
 module.exports = { sendSuccess, sendError, sendFatal };
