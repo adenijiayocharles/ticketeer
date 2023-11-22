@@ -1,4 +1,5 @@
 'use strict';
+require('dotenv').config();
 const status = require('http-status');
 
 const sendSuccess = (
@@ -19,17 +20,13 @@ const sendError = (
     return res.status(statusCode).json({ success: false, message, ...body });
 };
 
-const sendFatal = (
-    res,
-    message = 'Oops, something went wrong',
-    statusCode = status.INTERNAL_SERVER_ERROR,
-    body = {},
-    error,
-    stack
-) => {
-    return res
-        .status(statusCode)
-        .send({ success: false, message, ...body, error, stack });
+const sendFatal = (error, req, res) => {
+    return res.status(status.INTERNAL_SERVER_ERROR).send({
+        success: false,
+        message: 'Oops, something went wrong',
+        error: error.errors,
+        stack: error.stack,
+    });
 };
 
 module.exports = { sendSuccess, sendError, sendFatal };
