@@ -4,8 +4,8 @@
   "description": "ticket sales web api",
   "main": "app.js",
   "scripts": {
-    "start-development": "export NODE_ENV=development && nodemon app.js",
-    "start-production": "export NODE_ENV=production && nodemon app.js",
+    "development": "export NODE_ENV=development && nodemon app.js",
+    "production": "export NODE_ENV=production && nodemon app.js",
     "migrate": "node -e \"require('./migration').migrate()\"",
     "migrate:rollback": "node -e \"require('./migration').migrateRollback()\"",
     "migrate:reset": "node -e \"require('./migration').migrateReset()\"",
