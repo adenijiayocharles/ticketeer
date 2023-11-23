@@ -164,4 +164,4 @@ class AccountService {
     }
 }
 
-module.exports = AccountService;
+module.exports = new AccountService();

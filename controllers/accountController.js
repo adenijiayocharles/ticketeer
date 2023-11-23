@@ -1,11 +1,10 @@
 'use strict';
 const response = require('../utilities/response');
-const AccountService = require('../services/accountService');
-const AccountServiceClass = new AccountService();
+const accountService = require('../services/accountService');
 
 const register = async (req, res, next) => {
     try {
-        const result = await AccountServiceClass.register(req.body);
+        const result = await accountService.register(req.body);
         return response.sendResponse(
             res,
             result.status,
@@ -19,7 +18,7 @@ const register = async (req, res, next) => {
 
 const login = async (req, res, next) => {
     try {
-        const result = await AccountServiceClass.login(req.body);
+        const result = await accountService.login(req.body);
         return response.sendResponse(
             res,
             result.status,
@@ -34,7 +33,7 @@ const login = async (req, res, next) => {
 
 const resetPassword = async (req, res, next) => {
     try {
-        const result = await AccountServiceClass.resetPassword(req.body);
+        const result = await accountService.resetPassword(req.body);
         return response.sendResponse(
             res,
             result.status,
@@ -49,7 +48,7 @@ const resetPassword = async (req, res, next) => {
 
 const changePassword = async (req, res, next) => {
     try {
-        const result = await AccountServiceClass.changePassword(req.body);
+        const result = await accountService.changePassword(req.body);
         return response.sendResponse(
             res,
             result.status,
