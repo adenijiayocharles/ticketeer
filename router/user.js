@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 
 const updateProfileValidation = require('../middlewares/validators/validate-profile-update');
-const updatePasswordValidation = require('../middlewares/validators/validate-password-change');
+const updatePasswordValidation = require('../middlewares/validators/validate-password-update');
 
 const authMiddleware = require('../middlewares/auth');
 

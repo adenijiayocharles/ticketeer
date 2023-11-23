@@ -1,0 +1,24 @@
+'use strict';
+const Joi = require('joi');
+const httpStatus = require('http-status');
+const response = require('../../utilities/response');
+
+const validation = Joi.object({
+    current_password: Joi.string().trim().required(),
+    password: Joi.string().min(8).trim(true).required(),
+    password_confirmation: Joi.any()
+        .equal(Joi.ref('password'))
+        .required()
+        .label('Confirm password')
+        .messages({ 'any.only': '{{#label}} does not match with password' }),
+}).options({ abortEarly: false, allowUnknown: true });
+
+const passwordUpdateValidation = async (req, res, next) => {
+    const { error } = validation.validate(req.body);
+    if (error) {
+        return response.sendError(res, error.message, httpStatus.BAD_REQUEST);
+    } else {
+        next();
+    }
+};
+module.exports = passwordUpdateValidation;
