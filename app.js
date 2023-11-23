@@ -3,6 +3,7 @@ require('dotenv').config();
 const config = require('./config/config.js');
 const response = require('./utilities/response.js');
 const express = require('express');
+const status = require('http-status');
 const cors = require('cors');
 const app = express();
 
@@ -19,7 +20,7 @@ app.use('/api/user', userRouter);
 app.use('/api/event', eventRouter);
 
 app.get('/api/health-check', (req, res) => {
-    return response.sendSuccess(res, 'api running smoothly', 200);
+    return response.sendResponse(res, true, status.OK, 'Api running');
 });
 
 app.use((error, req, res, next) => {
