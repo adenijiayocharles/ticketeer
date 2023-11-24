@@ -1,42 +1,21 @@
 'use strict';
-const { Event } = require('../models');
-const httpStatus = require('http-status');
-const { isBefore } = require('date-fns');
 const response = require('../utilities/response');
+const eventService = require('../services/eventService');
 
 const create = async (req, res, next) => {
     try {
-        let startDateTime = new Date(
-            req.body.start_date + ' ' + req.body.start_time
-        );
-        let endDateTime = new Date(req.body.end_date + ' ' + req.body.end_time);
+        const data = {
+            ...req.body,
+            user_id: req.user.data.id,
+        };
 
-        if (isBefore(endDateTime, startDateTime)) {
-            return response.sendError(
-                res,
-                'Start date must start before end date',
-                httpStatus.BAD_REQUEST
-            );
-        }
-
-        const event = await Event.create({
-            name: req.body.name,
-            description: req.body.description,
-            type: req.body.type,
-            start_date: req.body.start_date,
-            start_time: req.body.start_time,
-            end_date: req.body.end_date,
-            end_time: req.body.end_time,
-            location_type: req.body.location_type,
-            location: req.body.location,
-            created_by: req.user.data.id,
-        });
-
-        return response.sendSuccess(
+        const result = await eventService.create(data);
+        return response.sendResponse(
             res,
-            'Event created successfully',
-            httpStatus.CREATED,
-            { event }
+            result.status,
+            result.statusCode,
+            result.message,
+            result.data
         );
     } catch (error) {
         next(error);
@@ -45,21 +24,19 @@ const create = async (req, res, next) => {
 
 const findAll = async (req, res, next) => {
     try {
-        const data = await Event.findAll({
-            where: { created_by: req.user.data.id },
-        });
+        const data = {
+            userId: req.user.data.id,
+        };
 
-        if (data) {
-            return response.sendSuccess(res, 'Events found', httpStatus.OK, {
-                data,
-            });
-        } else {
-            return response.sendError(
-                res,
-                'No created events yet',
-                httpStatus.OK
-            );
-        }
+        const result = await eventService.findAll(data);
+
+        return response.sendResponse(
+            res,
+            result.status,
+            result.statusCode,
+            result.message,
+            result.data
+        );
     } catch (error) {
         next(error);
     }
@@ -67,17 +44,20 @@ const findAll = async (req, res, next) => {
 
 const findOne = async (req, res, next) => {
     try {
-        const data = await Event.findOne({
-            where: { created_by: req.user.data.id, uuid: req.params.id },
-        });
+        const data = {
+            userId: req.user.data.id,
+            uuid: req.params.uuid,
+        };
 
-        if (data) {
-            return response.sendSuccess(res, 'Event found', httpStatus.OK, {
-                data,
-            });
-        } else {
-            return response.sendError(res, 'Event not found', httpStatus.OK);
-        }
+        const result = await eventService.findOne(data);
+
+        return response.sendResponse(
+            res,
+            result.status,
+            result.statusCode,
+            result.message,
+            result.data
+        );
     } catch (error) {
         next(error);
     }
@@ -85,27 +65,21 @@ const findOne = async (req, res, next) => {
 
 const update = async (req, res, next) => {
     try {
-        const data = await Event.update(req.body, {
-            where: { created_by: req.user.data.id, uuid: req.params.id },
-        });
+        const data = {
+            ...req.body,
+            userId: req.user.data.id,
+            uuid: req.params.uuid,
+        };
 
-        if (data[0]) {
-            const data = await Event.findOne({
-                where: { created_by: req.user.data.id, uuid: req.params.id },
-            });
-            return response.sendSuccess(
-                res,
-                'Event details updated',
-                httpStatus.OK,
-                { data }
-            );
-        } else {
-            return response.sendError(
-                res,
-                'Event not found, update failed',
-                httpStatus.OK
-            );
-        }
+        const result = await eventService.update(data);
+
+        return response.sendResponse(
+            res,
+            result.status,
+            result.statusCode,
+            result.message,
+            result.data
+        );
     } catch (error) {
         next(error);
     }
@@ -113,23 +87,19 @@ const update = async (req, res, next) => {
 
 const deleteEvent = async (req, res, next) => {
     try {
-        const event = await Event.destroy({
-            where: { uuid: req.params.id, created_by: req.user.data.id },
-        });
+        const data = {
+            userId: req.user.data.id,
+            uuid: req.params.uuid,
+        };
 
-        if (event) {
-            return response.sendSuccess(
-                res,
-                'Event deleted successfully',
-                httpStatus.OK
-            );
-        } else {
-            return response.sendError(
-                res,
-                'Unable to delete event. Please try again later',
-                httpStatus.OK
-            );
-        }
+        const result = await eventService.delete(data);
+
+        return response.sendResponse(
+            res,
+            result.status,
+            result.statusCode,
+            result.message
+        );
     } catch (error) {
         next(error);
     }

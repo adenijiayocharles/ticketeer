@@ -14,10 +14,10 @@ router.post(
     eventController.create
 );
 router.get('/', authMiddleware, eventController.findAll);
-router.get('/:id', authMiddleware, eventController.findOne);
-router.delete('/:id', authMiddleware, eventController.deleteEvent);
+router.get('/:uuid', authMiddleware, eventController.findOne);
+router.delete('/:uuid', authMiddleware, eventController.deleteEvent);
 router.put(
-    '/:id',
+    '/:uuid',
     [authMiddleware, updateEventValidation],
     eventController.update
 );
