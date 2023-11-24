@@ -27,7 +27,7 @@ class AccountService {
         } else {
             let hashedPassword = await bcrypt.hashSync(data.password, 10);
 
-            await User.create({
+            await this.userModelInstance.create({
                 first_name: data.first_name,
                 last_name: data.last_name,
                 email: data.email,
