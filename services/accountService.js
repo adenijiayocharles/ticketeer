@@ -19,29 +19,27 @@ class AccountService {
         });
 
         if (checkUser) {
-            this.response = {
+            return {
                 status: false,
                 statusCode: httpStatus.BAD_REQUEST,
                 message: 'User already exists',
             };
-        } else {
-            let hashedPassword = await bcrypt.hashSync(data.password, 10);
-
-            await this.userModelInstance.create({
-                first_name: data.first_name,
-                last_name: data.last_name,
-                email: data.email,
-                password: hashedPassword,
-            });
-
-            this.response = {
-                status: true,
-                statusCode: httpStatus.CREATED,
-                message: 'Account created successfully',
-            };
         }
 
-        return this.response;
+        let hashedPassword = await bcrypt.hashSync(data.password, 10);
+
+        await this.userModelInstance.create({
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            password: hashedPassword,
+        });
+
+        return {
+            status: true,
+            statusCode: httpStatus.CREATED,
+            message: 'Account created successfully',
+        };
     }
 
     async login(data) {
@@ -49,27 +47,33 @@ class AccountService {
             where: { email: data.email },
         });
 
-        if (user && bcrypt.compareSync(data.password, user.password)) {
-            const authToken = tokenizer.generateToken({
-                id: user.id,
-                uuid: user.uuid,
-            });
-
-            this.response = {
-                status: true,
-                statusCode: httpStatus.OK,
-                message: 'Login successfully',
-                data: authToken,
-            };
-        } else {
-            this.response = {
+        if (!user) {
+            return {
                 status: false,
                 statusCode: httpStatus.BAD_REQUEST,
                 message: 'Unable to login user',
             };
         }
 
-        return this.response;
+        if (!bcrypt.compareSync(data.password, user.password)) {
+            return {
+                status: false,
+                statusCode: httpStatus.BAD_REQUEST,
+                message: 'Unable to login user',
+            };
+        }
+
+        const authToken = tokenizer.generateToken({
+            id: user.id,
+            uuid: user.uuid,
+        });
+
+        return {
+            status: true,
+            statusCode: httpStatus.OK,
+            message: 'Login successfully',
+            data: authToken,
+        };
     }
 
     async resetPassword(data) {
@@ -77,40 +81,38 @@ class AccountService {
             where: { email: data.email },
         });
 
-        if (user) {
-            const randomUUID = uuidv4();
-            await this.userModelInstance.update(
-                { password_reset: randomUUID },
-                {
-                    where: {
-                        email: data.email,
-                    },
-                }
-            );
-
-            const emailPayload = {
-                recipient: user.email,
-                subject: 'Password reset email',
-                text: randomUUID,
-            };
-
-            await email.sendEmail(emailPayload);
-
-            this.response = {
-                status: true,
-                statusCode: httpStatus.OK,
-                message: 'Password reset email has been sent',
-                data: randomUUID,
-            };
-        } else {
-            this.response = {
+        if (!user) {
+            return {
                 status: false,
                 statusCode: httpStatus.UNAUTHORIZED,
                 message: "Unable to reset user's password",
             };
         }
 
-        return this.response;
+        const randomUUID = uuidv4();
+        await this.userModelInstance.update(
+            { password_reset: randomUUID },
+            {
+                where: {
+                    email: data.email,
+                },
+            }
+        );
+
+        const emailPayload = {
+            recipient: user.email,
+            subject: 'Password reset email',
+            text: randomUUID,
+        };
+
+        await email.sendEmail(emailPayload);
+
+        return {
+            status: true,
+            statusCode: httpStatus.OK,
+            message: 'Password reset email has been sent',
+            data: randomUUID,
+        };
     }
 
     async changePassword(data) {
@@ -121,38 +123,8 @@ class AccountService {
             },
         });
 
-        if (user) {
-            const password = await bcrypt.hashSync(
-                data.password_confirmation,
-                10
-            );
-            await this.userModelInstance.update(
-                {
-                    password_reset: null,
-                    password: password,
-                },
-                {
-                    where: {
-                        email: data.email,
-                    },
-                }
-            );
-
-            const emailPayload = {
-                recipient: user.email,
-                subject: 'Password reset successful',
-                text: 'Your password has been reset',
-            };
-
-            await email.sendEmail(emailPayload);
-
-            this.response = {
-                status: true,
-                statusCode: httpStatus.OK,
-                message: 'Password updated successfully',
-            };
-        } else {
-            this.response = {
+        if (!user) {
+            return {
                 status: true,
                 statusCode: httpStatus.UNAUTHORIZED,
                 message:
@@ -160,7 +132,25 @@ class AccountService {
             };
         }
 
-        return this.response;
+        const password = await bcrypt.hashSync(data.password_confirmation, 10);
+        await user.update({
+            password_reset: null,
+            password: password,
+        });
+
+        const emailPayload = {
+            recipient: user.email,
+            subject: 'Password reset successful',
+            text: 'Your password has been reset',
+        };
+
+        await email.sendEmail(emailPayload);
+
+        return {
+            status: true,
+            statusCode: httpStatus.OK,
+            message: 'Password updated successfully',
+        };
     }
 }
 
