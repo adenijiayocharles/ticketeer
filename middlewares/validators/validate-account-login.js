@@ -6,12 +6,17 @@ const response = require('../../utilities/response');
 const validation = Joi.object({
     email: Joi.string().email().trim(true).required(),
     password: Joi.string().min(8).trim(true).required(),
-}).options({ abortEarly: false, allowUnknown: true });
+}).options({ abortEarly: false, allowUnknown: false });
 
 const loginValidation = async (req, res, next) => {
     const { error } = validation.validate(req.body);
     if (error) {
-        return response.sendError(res, error.message, httpStatus.BAD_REQUEST);
+        return response.sendResponse(
+            res,
+            false,
+            httpStatus.BAD_REQUEST,
+            error.message
+        );
     } else {
         next();
     }

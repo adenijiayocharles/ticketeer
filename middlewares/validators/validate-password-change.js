@@ -10,12 +10,17 @@ const validation = Joi.object({
         .required()
         .label('Confirm password')
         .messages({ 'any.only': '{{#label}} does not match with password' }),
-}).options({ abortEarly: false, allowUnknown: true });
+}).options({ abortEarly: false, allowUnknown: false });
 
 const passwordChangeValidation = async (req, res, next) => {
     const { error } = validation.validate(req.body);
     if (error) {
-        return response.sendError(res, error.message, httpStatus.BAD_REQUEST);
+        return response.sendResponse(
+            res,
+            false,
+            httpStatus.BAD_REQUEST,
+            error.message
+        );
     } else {
         next();
     }

@@ -2,22 +2,8 @@
 require('dotenv').config();
 const status = require('http-status');
 
-const sendSuccess = (
-    res,
-    message = 'Operation successful',
-    statusCode = status.OK,
-    body = {}
-) => {
-    return res.status(statusCode).json({ success: true, message, ...body });
-};
-
-const sendError = (
-    res,
-    message = 'Operation failed',
-    statusCode = status.BAD_REQUEST,
-    body = {}
-) => {
-    return res.status(statusCode).json({ success: false, message, ...body });
+const sendResponse = (res, status, statusCode, message, data) => {
+    return res.status(statusCode).json({ success: status, message, data });
 };
 
 const sendFatal = (error, req, res) => {
@@ -36,4 +22,4 @@ const sendFatal = (error, req, res) => {
     return res.status(status.INTERNAL_SERVER_ERROR).send(errorObject);
 };
 
-module.exports = { sendSuccess, sendError, sendFatal };
+module.exports = { sendFatal, sendResponse };
