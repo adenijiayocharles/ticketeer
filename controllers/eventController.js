@@ -11,6 +11,7 @@ const create = async (req, res, next) => {
 
         const result = await eventService.create(data);
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -31,6 +32,7 @@ const findAll = async (req, res, next) => {
         const result = await eventService.findAll(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -52,6 +54,7 @@ const findOne = async (req, res, next) => {
         const result = await eventService.findOne(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -74,6 +77,7 @@ const update = async (req, res, next) => {
         const result = await eventService.update(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -95,6 +99,7 @@ const deleteEvent = async (req, res, next) => {
         const result = await eventService.delete(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,

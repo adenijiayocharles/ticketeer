@@ -12,6 +12,7 @@ const updateProfile = async (req, res, next) => {
         const result = await userService.updateProfile(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -32,6 +33,7 @@ const changePassword = async (req, res, next) => {
         const result = await userService.updatePassword(data);
 
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,

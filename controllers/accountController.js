@@ -6,6 +6,7 @@ const register = async (req, res, next) => {
     try {
         const result = await accountService.register(req.body);
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -20,6 +21,7 @@ const login = async (req, res, next) => {
     try {
         const result = await accountService.login(req.body);
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -35,6 +37,7 @@ const resetPassword = async (req, res, next) => {
     try {
         const result = await accountService.resetPassword(req.body);
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,
@@ -50,6 +53,7 @@ const changePassword = async (req, res, next) => {
     try {
         const result = await accountService.changePassword(req.body);
         return response.sendResponse(
+            req,
             res,
             result.status,
             result.statusCode,

@@ -9,7 +9,6 @@ const email = require('../services/email');
 
 class AccountService {
     constructor() {
-        this.response = {};
         this.userModelInstance = User;
     }
 

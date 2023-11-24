@@ -8,32 +8,32 @@ const verifyUser = (req, res, next) => {
     let token = req.headers['authorization'];
 
     if (!token) {
-        return response.sendError(
+        return response.sendResponse(
+            req,
             res,
-            'Authorization token not found',
-            httpStatus.UNAUTHORIZED
+            false,
+            httpStatus.UNAUTHORIZED,
+            'Authorization token not found'
         );
     }
 
-    if (token.startsWith('Bearer ')) {
-        token = token.slice(7, token.length);
-    } else {
-        return response.sendError(
+    if (!token.startsWith('Bearer ')) {
+        return response.sendResponse(
+            req,
             res,
-            "Authorization token not found. Token must start with 'Bearer'",
-            httpStatus.UNAUTHORIZED
+            false,
+            httpStatus.UNAUTHORIZED,
+            "Authorization token not found. Token must start with 'Bearer'"
         );
     }
+
+    token = token.slice(7, token.length);
 
     try {
         const decoded = tokenizer.verifyToken(token);
         req.user = decoded;
-    } catch (err) {
-        return response.sendError(
-            res,
-            'Invalid Authorization Token',
-            httpStatus.UNAUTHORIZED
-        );
+    } catch (error) {
+        next(error);
     }
 
     return next();

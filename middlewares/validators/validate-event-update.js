@@ -23,6 +23,7 @@ const updateEventValidation = async (req, res, next) => {
     const { error } = validation.validate(req.body);
     if (error) {
         return response.sendResponse(
+            req,
             res,
             false,
             httpStatus.BAD_REQUEST,
