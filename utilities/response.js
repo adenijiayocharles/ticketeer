@@ -1,8 +1,12 @@
 'use strict';
 require('dotenv').config();
 const status = require('http-status');
+const {
+    logger,
+    formatHTTPLoggerResponse,
+} = require('../services/loggerService');
 
-const sendResponse = (res, status, statusCode, message, data) => {
+const sendResponse = (req, res, status, statusCode, message, data) => {
     return res.status(statusCode).json({ success: status, message, data });
 };
 
@@ -18,6 +22,10 @@ const sendFatal = (error, req, res) => {
             stack: error.stack,
         };
     }
+    logger.error(
+        'Failure message',
+        formatHTTPLoggerResponse(req, res, { message: error.message })
+    );
 
     return res.status(status.INTERNAL_SERVER_ERROR).send(errorObject);
 };
