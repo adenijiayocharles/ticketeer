@@ -2,7 +2,8 @@
 require('dotenv').config;
 const winston = require('winston');
 const { combine, timestamp, json, printf } = winston.format;
-const { generateRandomId } = require('../utilities/general');
+const { generateRandomId } = require('../../utilities/general');
+const redacted = require('./redacted');
 
 const appVersion = process.env.npm_package_version;
 
@@ -30,6 +31,32 @@ const logger = winston.createLogger({
     transports: [new winston.transports.Console()],
 });
 
+const redactLogData = (data) => {
+    if (
+        typeof data === 'object' &&
+        data !== null &&
+        !data.constructor.name.startsWith('model')
+    ) {
+        if (Array.isArray(data)) {
+            return data.map((item) => redactLogData(item));
+        }
+
+        const redactedData = {};
+
+        for (const key in data) {
+            if (redacted.includes(key)) {
+                redactedData[key] = '***************';
+            } else {
+                redactedData[key] = redactLogData(data[key]);
+            }
+        }
+
+        return redactedData;
+    } else {
+        return data;
+    }
+};
+
 const formatHTTPLoggerResponse = (req, res, responseBody) => {
     return {
         request: {
@@ -38,7 +65,7 @@ const formatHTTPLoggerResponse = (req, res, responseBody) => {
             baseUrl: req.baseUrl,
             url: req.url,
             method: req.method,
-            body: req.body,
+            body: redactLogData(req.body),
             params: req?.params,
             query: req?.query,
             clientIp: req?.socket.remoteAddress,
@@ -46,7 +73,7 @@ const formatHTTPLoggerResponse = (req, res, responseBody) => {
         response: {
             headers: res.getHeaders(),
             statusCode: res.statusCode,
-            body: responseBody,
+            body: redactLogData(responseBody),
         },
     };
 };

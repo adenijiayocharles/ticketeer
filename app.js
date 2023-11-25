@@ -14,7 +14,9 @@ app.use(express.urlencoded({ extended: false }));
 const accountRouter = require('./router/account');
 const userRouter = require('./router/user');
 const eventRouter = require('./router/event');
+const loggerMiddleware = require('./middlewares/logger');
 
+app.use(loggerMiddleware);
 app.use('/api/account', accountRouter);
 app.use('/api/user', userRouter);
 app.use('/api/event', eventRouter);
