@@ -1,6 +1,7 @@
 'use strict';
 require('dotenv').config;
 const winston = require('winston');
+const rotateLogFileDaily = require('winston-daily-rotate-file');
 const { combine, timestamp, json, printf } = winston.format;
 const { generateRandomId } = require('../../utilities/general');
 const redacted = require('./redacted');
@@ -28,7 +29,16 @@ const logger = winston.createLogger({
             return JSON.stringify(response, null, 2);
         })
     ),
-    transports: [new winston.transports.Console()],
+    transports: [
+        new winston.transports.Console(),
+        new rotateLogFileDaily({
+            filename: 'logs/rotating-logs-%DATE%.log',
+            datePattern: 'MMMM-DD-YYYY',
+            zippedArchive: false,
+            maxSize: '20m',
+            maxFiles: '14d',
+        }),
+    ],
 });
 
 const redactLogData = (data) => {
