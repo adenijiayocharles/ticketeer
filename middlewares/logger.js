@@ -7,17 +7,18 @@ const {
 const loggerMiddleware = (req, res, next) => {
     const originalSend = res.send;
     let responseSent = false;
+    const requestStartTime = Date.now();
     res.send = function (body) {
         if (!responseSent) {
             if (res.statusCode < 400) {
                 logger.info(
-                    'Some Success message',
-                    formatHTTPLoggerResponse(req, res, body)
+                    body.message,
+                    formatHTTPLoggerResponse(req, res, body, requestStartTime)
                 );
             } else {
                 logger.error(
                     body.message,
-                    formatHTTPLoggerResponse(req, res, body)
+                    formatHTTPLoggerResponse(req, res, body, requestStartTime)
                 );
             }
             responseSent = true;

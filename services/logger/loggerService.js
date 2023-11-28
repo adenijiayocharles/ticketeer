@@ -57,7 +57,12 @@ const redactLogData = (data) => {
     }
 };
 
-const formatHTTPLoggerResponse = (req, res, responseBody) => {
+const formatHTTPLoggerResponse = (req, res, responseBody, requestStartTime) => {
+    let requestDuration = '';
+    if (requestStartTime) {
+        const endTime = Date.now() - requestStartTime;
+        requestDuration = `${endTime / 1000}s`; // ms to s
+    }
     return {
         request: {
             headers: req.headers,
@@ -73,6 +78,7 @@ const formatHTTPLoggerResponse = (req, res, responseBody) => {
         response: {
             headers: res.getHeaders(),
             statusCode: res.statusCode,
+            requestDuration,
             body: redactLogData(responseBody),
         },
     };
