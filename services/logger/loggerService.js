@@ -1,8 +1,9 @@
 'use strict';
 require('dotenv').config;
 const winston = require('winston');
+require('winston-mongodb');
 const rotateLogFileDaily = require('winston-daily-rotate-file');
-const { combine, timestamp, json, printf } = winston.format;
+const { combine, timestamp, json, printf, metadata } = winston.format;
 const { generateRandomId } = require('../../utilities/general');
 const redacted = require('./redacted');
 
@@ -12,6 +13,7 @@ const logger = winston.createLogger({
     format: combine(
         timestamp({ format: 'YYYY-MMM-DD HH:mm:ss' }),
         json(),
+        metadata(),
         printf(({ timestamp, level, message, ...data }) => {
             const response = {
                 level,
@@ -30,7 +32,11 @@ const logger = winston.createLogger({
         })
     ),
     transports: [
-        new winston.transports.Console(),
+        new winston.transports.MongoDB({
+            db: process.env.MONGODB_URI,
+            collection: 'logs',
+            options: { useUnifiedTopology: true },
+        }),
         new rotateLogFileDaily({
             filename: 'logs/rotating-logs-%DATE%.log',
             datePattern: 'MMMM-DD-YYYY',
